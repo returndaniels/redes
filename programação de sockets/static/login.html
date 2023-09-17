@@ -106,9 +106,9 @@
           body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
         });
 
-        if (response.redirected) {
+        if (response.redirected)
           window.location.href = response.url;
-        } else {
+        else if (!response.ok) {
           const data = await response.text();
           const loginStatus = document.getElementById("login-status");
           loginStatus.innerHTML = data;
@@ -116,7 +116,6 @@
       } catch (error) {
         console.error("Erro ao enviar a solicitação:", error);
       }
-
     }
   </script>
 </body>
