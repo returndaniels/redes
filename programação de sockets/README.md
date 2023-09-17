@@ -1,6 +1,6 @@
 # README - Construção de um Servidor Web com Programação Socket
 
-Este repositório contém o código-fonte de um servidor web simples desenvolvido como parte da atividade de "Construção de um Servidor Web com Programação Socket" na disciplina de Redes de Computadores (2023/2). Veja a tarefa completa em [Tarefa2graduacao](https://github.com/returndaniels/redes/blob/master/programa%C3%A7%C3%A3o%20de%20sockets/Tarefa2graduacao.pdf)]
+Este repositório contém o código-fonte de um servidor web simples desenvolvido como parte da atividade de "Construção de um Servidor Web com Programação Socket" na disciplina de Redes de Computadores (2023/2). Veja a tarefa completa em [Tarefa2graduacao](https://github.com/returndaniels/redes/blob/master/programa%C3%A7%C3%A3o%20de%20sockets/Tarefa2graduacao.pdf)
 
 ## Sobre o Projeto
 
