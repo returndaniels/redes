@@ -24,7 +24,7 @@ def send_page_response(connectionSocket, response_header, filename):
             outputdata = file.read()
     except IOError:
         response_header = "HTTP/1.1 404 Not Found\r\n\r\n"
-        outputdata = b"File not found"
+        send_page_response(connectionSocket, response_header, "./static/404.html")
 
     connectionSocket.send(response_header.encode())
     connectionSocket.send(outputdata)
@@ -92,15 +92,10 @@ def handle_request(connectionSocket):
         elif not (is_logged) and (filename == "/home" or "/login" in filename):
             filename = "/login.html"
 
-        try:
-            response_header = "HTTP/1.1 200 OK\r\n\r\n"
-            send_page_response(
-                connectionSocket, response_header, f"./static/{filename[1:]}"
-            )
-
-        except IOError:
-            response_header = "HTTP/1.1 404 Not Found\r\n\r\n"
-            send_page_response(connectionSocket, response_header, "./static/404.html")
+        response_header = "HTTP/1.1 200 OK\r\n\r\n"
+        send_page_response(
+            connectionSocket, response_header, f"./static/{filename[1:]}"
+        )
 
     connectionSocket.close()
 
