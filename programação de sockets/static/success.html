@@ -16,6 +16,15 @@
       height: 100vh;
     }
 
+    a {
+      color: #0078d4;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
     .success-container {
       background-color: #8bc34a;
       padding: 20px;
@@ -34,7 +43,8 @@
       color: #fff;
     }
 
-    .home-link {
+    button {
+      border: none;
       margin-top: 20px;
       display: inline-block;
       text-decoration: none;
@@ -42,20 +52,51 @@
       padding: 10px 20px;
       color: #fff;
       border-radius: 3px;
+      cursor: pointer;
     }
 
-    .home-link:hover {
+    button:hover {
       background-color: #357a38;
+    }
+
+    .home-link {
+      position: absolute;
+      left: 15px;
+      top: 15px;
     }
   </style>
 </head>
 
 <body>
+  <a class="home-link" href="/">Ir para a página inicial.</a>
+
   <div class="success-container">
-    <h2>Sucesso!</h2>
-    <p class="success-message">Você fez login com sucesso.</p>
-    <a class="home-link" href="/">Logoff</a>
+    <h2>Usuário autenticado!</h2>
+    <p class="success-message">Você está logado!</p>
+    <button type="submit" onclick="logoff(event)">Logoff</button>
   </div>
+
+
+  <script>
+    async function logoff(event) {
+      event.preventDefault();
+
+      try {
+        const response = await fetch("/logoff", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        });
+        console.log(response)
+
+        window.location.href = response.url;
+      } catch (error) {
+        console.error("Erro ao enviar a solicitação:", error);
+      }
+
+    }
+  </script>
 </body>
 
 </html>

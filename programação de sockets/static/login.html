@@ -16,6 +16,16 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      position: relative;
+    }
+
+    a {
+      color: #0078d4;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
 
     .login-container {
@@ -59,10 +69,17 @@
     .submit-button:hover {
       background-color: #0056b3;
     }
+
+    .home-link {
+      position: absolute;
+      left: 15px;
+      top: 15px;
+    }
   </style>
 </head>
 
 <body>
+  <a class="home-link" href="/">Ir para a página inicial.</a>
   <div class="login-container">
     <h2>Login</h2>
     <form class="login-form" onsubmit="submitForm(event)">
@@ -74,30 +91,32 @@
   </div>
 
   <script>
-    function submitForm(event) {
+    async function submitForm(event) {
       event.preventDefault();
 
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      fetch("/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
-      })
-        .then(response => {
-          if (response.redirected) window.location.href = response.url;
-          return response.text()
-        })
-        .then(data => {
+      try {
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+        });
+
+        if (response.redirected) {
+          window.location.href = response.url;
+        } else {
+          const data = await response.text();
           const loginStatus = document.getElementById("login-status");
           loginStatus.innerHTML = data;
-        })
-        .catch(error => {
-          console.error("Erro ao enviar a solicitação:", error);
-        });
+        }
+      } catch (error) {
+        console.error("Erro ao enviar a solicitação:", error);
+      }
+
     }
   </script>
 </body>
