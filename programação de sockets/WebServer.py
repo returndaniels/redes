@@ -33,6 +33,7 @@ def send_page_response(connectionSocket, response_header, filename):
 
 def handle_request(connectionSocket):
     request_method = None
+    is_logged = False
     message = connectionSocket.recv(1024).decode()
     headers = message.split("\r\n")
 
@@ -44,7 +45,7 @@ def handle_request(connectionSocket):
                     session_id = cookie.split("=")[1]
                     if session_id in sessions:
                         username = sessions[session_id]
-                        # O usuário está logado, continue com a resposta
+                        is_logged = True
                         break
 
     if len(message.split()) >= 5:
@@ -74,10 +75,22 @@ def handle_request(connectionSocket):
             send_page_response(
                 connectionSocket, response_header, "./static/unauthorized.html"
             )
-    else:
+    elif request_method == "POST" and "/logoff" in message:
+        for session_id, user in sessions.items():
+            if user == username:
+                del sessions[session_id]
+                break
+
+        response_header = "HTTP/1.1 302 Found\r\nLocation: /login\r\n\r\n"
+        connectionSocket.send(response_header.encode())
+    elif len(message.split()) > 0:
         filename = message.split()[1]
         filename = "/index.html" if filename == "/" else filename
-        filename = "/success.html" if filename == "/home" else filename
+
+        if is_logged and (filename == "/home" or "/login" in filename):
+            filename = "/success.html"
+        elif not (is_logged) and (filename == "/home" or "/login" in filename):
+            filename = "/login.html"
 
         try:
             response_header = "HTTP/1.1 200 OK\r\n\r\n"
@@ -94,7 +107,7 @@ def handle_request(connectionSocket):
 
 def main():
     serverSocket = socket(AF_INET, SOCK_STREAM)
-    serverPort = 3001
+    serverPort = 3000
     serverSocket.bind(("", serverPort))
     serverSocket.listen(1)
 
