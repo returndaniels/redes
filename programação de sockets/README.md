@@ -27,6 +27,13 @@ python db_seeder.py
 ```
 
 Isso criará um banco de dados de usuários e definirá a senha padrão para todos os usuários como `"senha123"`.
+#### Usuários
+```
+[{ username: 'usuario1', password: 'senha123' },
+ { username: 'usuario2', password: 'senha123' },
+ { username: 'usuario3', password: 'senha123' }]
+```
+
 
 2. **Executando o Servidor:** Após popular o banco de dados, execute o programa `WebServer.py` para levantar o servidor. O servidor estará disponível em "localhost:3000" ou "127.0.0.1:3000". Para acessar de outros dispositivos na mesma rede, você precisa saber o IP do computador onde o servidor está rodando, por exemplo, `"192.168.1.3:3000"`.
 
