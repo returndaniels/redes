@@ -1,4 +1,7 @@
-*.pyc
 *.db
 
-*./__pycache__/
+# Ignora arquivos .pyc
+*.pyc
+
+# Ignora diretórios __pycache__
+__pycache__/
