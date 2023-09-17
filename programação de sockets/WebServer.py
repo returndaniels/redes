@@ -29,8 +29,11 @@ def send_page_response(connectionSocket, response_header, filename):
 
 
 def handle_request(connectionSocket):
+    request_method = None
     message = connectionSocket.recv(1024).decode()
-    request_method, _, _, _, _ = message.split()[:5]
+
+    if len(message.split()) == 5:
+        request_method, _, _, _, _ = message.split()[:5]
 
     if request_method == "POST" and "/login" in message:
         _, data = message.split("\r\n\r\n")
