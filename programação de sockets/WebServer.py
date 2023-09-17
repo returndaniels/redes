@@ -104,7 +104,7 @@ def handle_logoff(connectionSocket, username):
             del sessions[session_id]
             break
 
-    response_header = "HTTP/1.1 302 Found\r\nLocation: /login\r\n\r\n"
+    response_header = "HTTP/1.1 302 Found\r\nLocation: /\r\n\r\n"
     connectionSocket.send(response_header.encode())
 
 
