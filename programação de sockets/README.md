@@ -1,7 +1,6 @@
 # README - Construção de um Servidor Web com Programação Socket
 
-Este repositório contém o código-fonte de um servidor web simples desenvolvido como parte da atividade de "Construção de um Servidor Web com Programação Socket" na disciplina de Redes de Computadores (2023/2). Veja a tarefa completa em [Tarefa2graduacao](./github/Tarefa2graduacao.pdf)
-
+Este repositório contém o código-fonte de um servidor web simples desenvolvido como parte da atividade de "Construção de um Servidor Web com Programação Socket" na disciplina de Redes de Computadores (2023/2). Veja a tarefa completa em [Tarefa2graduacao](./github/Tarefa2graduacao.pdf).
 
 ## Sobre o Projeto
 
@@ -19,6 +18,20 @@ Este projeto também inclui um laboratório prático baseado em um roteiro dispo
 
 ## Executando o Servidor
 
-Para executar o servidor, siga as instruções no código-fonte fornecido neste repositório. O servidor escutará em uma porta especificada (por padrão, porta 3000) e responderá às solicitações HTTP dos clientes.
+Para executar o servidor, siga as instruções abaixo:
+
+1. **Populando o Banco de Dados:** Primeiro, execute o script `db_seeder.py` para popular o banco de dados. Use o seguinte comando:
+
+```python
+python db_seeder.py
+```
+
+Isso criará um banco de dados de usuários e definirá a senha padrão para todos os usuários como `"senha123"`.
+
+2. **Executando o Servidor:** Após popular o banco de dados, execute o programa `WebServer.py` para levantar o servidor. O servidor estará disponível em "localhost:3000" ou "127.0.0.1:3000". Para acessar de outros dispositivos na mesma rede, você precisa saber o IP do computador onde o servidor está rodando, por exemplo, `"192.168.1.3:3000"`.
+
+```python
+python WebServer.py
+```
 
 Este projeto serve como uma introdução básica à criação de servidores web usando programação de socket em Python. É apenas um exemplo de servidor web simples e não cobre todos os aspectos de um servidor web completo, como autenticação segura e autorização, manipulação de múltiplas solicitações simultâneas, entre outros.
