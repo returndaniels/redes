@@ -54,6 +54,7 @@ def handle_request(connectionSocket):
             )
     else:
         filename = message.split()[1]
+        filename = "/index.html" if filename == "/" else filename
 
         try:
             response_header = "HTTP/1.1 200 OK\r\n\r\n"
