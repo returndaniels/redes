@@ -4,6 +4,9 @@ import sys
 import urllib.parse
 from pasword import verify_password
 from livereload import Server
+import uuid
+
+sessions = {}
 
 
 def verify_user(username):
@@ -31,8 +34,20 @@ def send_page_response(connectionSocket, response_header, filename):
 def handle_request(connectionSocket):
     request_method = None
     message = connectionSocket.recv(1024).decode()
+    headers = message.split("\r\n")
 
-    if len(message.split()) == 5:
+    for header in headers:
+        if header.startswith("Cookie:"):
+            cookies = header.split(" ")
+            for cookie in cookies:
+                if "session_id" in cookie:
+                    session_id = cookie.split("=")[1]
+                    if session_id in sessions:
+                        username = sessions[session_id]
+                        # O usuário está logado, continue com a resposta
+                        break
+
+    if len(message.split()) >= 5:
         request_method, _, _, _, _ = message.split()[:5]
 
     if request_method == "POST" and "/login" in message:
@@ -46,10 +61,14 @@ def handle_request(connectionSocket):
             _, _, user_password, salt = user
 
         if user and verify_password(password, user_password, salt):
-            response_header = "HTTP/1.1 200 OK\r\n\r\n"
-            send_page_response(
-                connectionSocket, response_header, "./static/success.html"
+            session_id = str(uuid.uuid4())
+
+            sessions[session_id] = username
+
+            response_header = "HTTP/1.1 302 Found\r\nLocation: /home\r\nSet-Cookie: session_id={}\r\n\r\n".format(
+                session_id
             )
+            connectionSocket.send(response_header.encode())
         else:
             response_header = "HTTP/1.1 401 Unauthorized\r\n\r\n"
             send_page_response(
@@ -58,6 +77,7 @@ def handle_request(connectionSocket):
     else:
         filename = message.split()[1]
         filename = "/index.html" if filename == "/" else filename
+        filename = "/success.html" if filename == "/home" else filename
 
         try:
             response_header = "HTTP/1.1 200 OK\r\n\r\n"
@@ -74,7 +94,7 @@ def handle_request(connectionSocket):
 
 def main():
     serverSocket = socket(AF_INET, SOCK_STREAM)
-    serverPort = 3000
+    serverPort = 3001
     serverSocket.bind(("", serverPort))
     serverSocket.listen(1)
 
