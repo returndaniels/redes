@@ -108,6 +108,21 @@ def handle_logoff(connectionSocket, username):
     connectionSocket.send(response_header.encode())
 
 
+def get_dns_ip():
+    """
+    Obtém o endereço IP de DNS do servidor.
+
+    Returns:
+        str: O endereço IP de DNS do servidor.
+    """
+    try:
+        host_name = gethostname()
+        dns_ip = gethostbyname(host_name)
+        return dns_ip
+    except socket.error:
+        return "Endereço IP de DNS não encontrado"
+
+
 def handle_request(connectionSocket):
     """
     Lida com a solicitação HTTP recebida do cliente, roteia para as funções apropriadas e envia a resposta.
@@ -141,6 +156,11 @@ def handle_request(connectionSocket):
         handle_login(connectionSocket, message)
     elif request_method == "POST" and "/logoff" in message:
         handle_logoff(connectionSocket, username)
+    elif request_method == "GET" and "/get-dns" in message:
+        dns_ip = get_dns_ip()
+        response_header = "HTTP/1.1 200 OK\r\n\r\n"
+        connectionSocket.send(response_header.encode())
+        connectionSocket.send(dns_ip.encode())
     elif len(message.split()) > 0:
         filename = message.split()[1]
         filename = "/index.html" if filename == "/" else filename

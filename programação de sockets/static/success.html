@@ -73,9 +73,22 @@
   <div class="success-container">
     <h2>Usuário autenticado!</h2>
     <p class="success-message">Você está logado!</p>
+    <p>Endereço IP de DNS do servidor:</p>
+    <div id="dns-ip"></div>
     <button type="submit" onclick="logoff(event)">Logoff</button>
   </div>
 
+  <script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/get-dns', true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var dnsInfo = xhr.responseText;
+        document.getElementById('dns-ip').innerHTML = "DNS IP: " + dnsInfo;
+      }
+    };
+    xhr.send();
+  </script>
 
   <script>
     async function logoff(event) {
