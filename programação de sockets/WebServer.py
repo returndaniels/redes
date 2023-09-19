@@ -1,6 +1,10 @@
+import socket
 from socket import *
 import sqlite3
 import sys
+import re
+import subprocess
+import platform
 import urllib.parse
 from pasword import verify_password
 from livereload import Server
@@ -108,19 +112,86 @@ def handle_logoff(connectionSocket, username):
     connectionSocket.send(response_header.encode())
 
 
-def get_dns_ip():
+def is_valid_ipv4_address(ip):
+    """
+    Verifica se a string fornecida é um endereço IPv4 válido.
+
+    Args:
+        ip (str): A string a ser verificada.
+
+    Returns:
+        bool: True se a string for um endereço IPv4 válido; caso contrário, False.
+    """
+    ipv4_pattern = re.compile(r"^(\d{1,3}\.){3}\d{1,3}$")
+    return bool(ipv4_pattern.match(ip))
+
+
+def get_unix_dns_ips():
+    """
+    Recupera os endereços IP do servidor DNS em um sistema baseado em Unix do arquivo "/etc/resolv.conf".
+
+    Returns:
+        list: Uma lista de endereços IP de servidores DNS IPv4 válidos encontrados no arquivo.
+    """
+    dns_ips = []
+
+    with open("/etc/resolv.conf") as fp:
+        for line in fp:
+            columns = line.split()
+            if len(columns) >= 2 and columns[0] == "nameserver":
+                ip = columns[1]
+                if is_valid_ipv4_address(ip):
+                    dns_ips.append(ip)
+
+    return dns_ips
+
+
+def get_windows_dns_ips():
+    """
+    Recupera os endereços IP do servidor DNS em um sistema Windows usando o comando “ipconfig”.
+
+    Returns:
+        list: Uma lista de endereços IP de servidores DNS IPv4 válidos encontrados na saída "ipconfig".
+    """
+    try:
+        output = subprocess.check_output(["ipconfig", "/all"], universal_newlines=True)
+    except subprocess.CalledProcessError:
+        return []
+
+    ipconfig_all_list = output.split("\n")
+
+    dns_ips = []
+    found_dns_servers = False
+
+    for line in ipconfig_all_list:
+        if "DNS Servers" in line or "Servidores DNS" in line:
+            found_dns_servers = True
+        elif found_dns_servers:
+            ips = re.findall(r"[0-9.:a-fA-F%]+", line)
+            for ip in ips:
+                if is_valid_ipv4_address(ip):
+                    dns_ips.append(ip)
+                else:
+                    found_dns_servers = False
+    return dns_ips
+
+
+def get_dns_ips():
     """
     Obtém o endereço IP de DNS do servidor.
 
     Returns:
         str: O endereço IP de DNS do servidor.
     """
-    try:
-        host_name = gethostname()
-        dns_ip = gethostbyname(host_name)
-        return dns_ip
-    except socket.error:
-        return "Endereço IP de DNS não encontrado"
+    dns_ips = []
+
+    if platform.system() == "Windows":
+        dns_ips = get_windows_dns_ips()
+    elif platform.system() == "Linux" or platform.system() == "Darwin":
+        dns_ips = get_unix_dns_ips()
+    else:
+        print("Plataforma não suportada: {0}".format(platform.system()))
+    return dns_ips
 
 
 def handle_request(connectionSocket):
@@ -157,10 +228,11 @@ def handle_request(connectionSocket):
     elif request_method == "POST" and "/logoff" in message:
         handle_logoff(connectionSocket, username)
     elif request_method == "GET" and "/get-dns" in message:
-        dns_ip = get_dns_ip()
+        dns_ips = get_dns_ips()
+        dns_info = "<br/>".join(dns_ips)
         response_header = "HTTP/1.1 200 OK\r\n\r\n"
         connectionSocket.send(response_header.encode())
-        connectionSocket.send(dns_ip.encode())
+        connectionSocket.send(dns_info.encode())
     elif len(message.split()) > 0:
         filename = message.split()[1]
         filename = "/index.html" if filename == "/" else filename
@@ -185,6 +257,7 @@ def main():
     Returns:
         None
     """
+
     serverSocket = socket(AF_INET, SOCK_STREAM)
     serverPort = 3000
     serverSocket.bind(("", serverPort))
