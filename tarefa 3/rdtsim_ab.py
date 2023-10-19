@@ -1,3 +1,42 @@
+##
+## SAMPLE SOLUTION --- ALTERNATING-BIT PROTOCOL --- MARCH 18
+##
+## Python version of:
+##
+## ****************************************************************************
+## ALTERNATING BIT AND GO-BACK-N NETWORK SIMULATOR: VERSION 1.1  J.F.Kurose
+##
+## This code should be used for PA2, unidirectional data-transfer protocols
+## from A to B.
+## Network properties:
+##   - one-way network delay averages 5.0 time units (longer if there
+##     are other messages in the channel for GBN), but can be larger
+##   - packets can be corrupted (either the header or the data portion)
+##     or lost, according to user-defined probabilities
+##   - packets will be delivered in the order in which they were sent
+##     (although some can be lost).
+## ****************************************************************************
+##
+## Python version by:
+## Eric Eide <eeide@cs.utah.edu>
+## University of Utah
+## March 2022
+##
+## ==> STUDENTS: Implement the methods for EntityA and EntityB.
+##
+## Run `python3 <thisfile.py> -h` in a terminal window to see the various
+## parameters that you can set for a run of this simulator.
+##
+## This program defines a variable `TRACE` that you can use to conditionally
+## print messages from your EntityA and EntityB methods.  For example:
+##
+##   if TRACE>0:
+##       print('A very important event just happened!')
+##
+## The value of `TRACE` is set by the `-v` command line option.  The default
+## value of `TRACE` is 0 (meaning "no tracing").
+##
+
 import argparse
 from copy import deepcopy
 from enum import Enum, auto
@@ -7,23 +46,39 @@ import time
 
 from binascii import crc32
 
+###############################################################################
 
+## ************************* BASIC DATA STRUCTURES ****************************
+##
+## STUDENTS: Do not modify these definitions.
+##
+## ****************************************************************************
+
+
+# A Msg is the data unit passed from layer 5 (teacher's code) to layer 4
+# (student's code).  It contains the data (bytes) to be delivered to layer 5
+# via the student's transport-level protocol entities.
+#
 class Msg:
     MSG_SIZE = 20
 
     def __init__(self, data):
-        self.data = data
+        self.data = data  # type: bytes[MSG_SIZE]
 
     def __str__(self):
         return "Msg(data=%s)" % (self.data)
 
 
+# A Pkt is the data unit passed from layer 4 (student's code) to layer 3
+# (teacher's code).  Note the pre-defined packet structure, which all students
+# must follow.
+#
 class Pkt:
     def __init__(self, seqnum, acknum, checksum, payload):
-        self.seqnum = seqnum
-        self.acknum = acknum
-        self.checksum = checksum
-        self.payload = payload
+        self.seqnum = seqnum  # type: integer
+        self.acknum = acknum  # type: integer
+        self.checksum = checksum  # type: integer
+        self.payload = payload  # type: bytes[Msg.MSG_SIZE]
 
     def __str__(self):
         return "Pkt(seqnum=%s, acknum=%s, checksum=%s, payload=%s)" % (
@@ -34,29 +89,65 @@ class Pkt:
         )
 
 
+###############################################################################
+
+## ***************** STUDENTS WRITE THE NEXT SEVEN METHODS ********************
+##
+## STUDENTS: When you implement these methods, use instance variables only!
+## I.e., variables that you access through `self' like `self.x`.  Do NOT use
+## global variables (a.k.a. module-scoped variables) or class variables.
+##
+## The reason for this restriction is the autograder, which may run several
+## simulations within a single Python process.  For each simulation, the
+## autograder will create a new instance of EntityA and a new instance of
+## EntityB.  If you use global variables and/or class variables in your
+## implmentations of EntityA and EntityB, then your code may not work properly
+## when run by the autograder, and you may LOSE POINTS!
+##
+## If you have any questions about this, please ask the teaching staff.
+##
+## ****************************************************************************
+
+
 class EntityA:
+    # The following method will be called once (only) before any other
+    # EntityA methods are called.  You can use it to do any initialization.
+    #
+    # seqnum_limit is "the number of distinct seqnum values that your protocol
+    # may use."  The seqnums and acknums in all layer3 Pkts must be between
+    # zero and seqnum_limit-1, inclusive.  E.g., if seqnum_limit is 16, then
+    # all seqnums must be in the range 0-15.
     def __init__(self, seqnum_limit):
         self.OUTPUT = 0
         self.INPUT = 1
         self.TIMER = 2
 
+        # How long to wait for ack?
         self.WAIT_TIME = 10.0
 
+        # State
         self.layer5_msgs = []
         self.bit = 0
         self.sent_pkt = None
         self.handle_event = self.handle_event_wait_for_call
 
+    # Called from layer 5, passed the data to be sent to other side.
+    # The argument `message` is a Msg containing the data to be sent.
     def output(self, message):
         self.layer5_msgs.append(message)
         self.handle_event(self.OUTPUT)
 
+    # Called from layer 3, when a packet arrives for layer 4 at EntityA.
+    # The argument `packet` is a Pkt containing the newly arrived packet.
     def input(self, packet):
         self.handle_event(self.INPUT, packet)
 
+    # Called when A's timer goes off.
     def timer_interrupt(self):
         self.handle_event(self.TIMER)
         pass
+
+    #####
 
     def handle_event_wait_for_call(self, e, arg=None):
         if e == self.OUTPUT:
@@ -101,33 +192,47 @@ class EntityA:
         else:
             self.unknown_event(e)
 
+    #####
+
     def self_unknown_event(self, e):
         print(f"EntityA: ignoring unknown event {e}.")
 
 
-class EntityB:
-    #
+#####
 
+
+class EntityB:
+    # The following method will be called once (only) before any other
+    # EntityB methods are called.  You can use it to do any initialization.
+    #
+    # See comment for the meaning of seqnum_limit.
     def __init__(self, seqnum_limit):
         self.expecting_bit = 0
         pass
 
+    # Called from layer 3, when a packet arrives for layer 4 at EntityB.
+    # The argument `packet` is a Pkt containing the newly arrived packet.
     def input(self, packet):
+        # print(f'B received: {packet}')
         if packet.seqnum != self.expecting_bit or pkt_is_corrupt(packet):
             p = Pkt(0, 1 - self.expecting_bit, 0, packet.payload)
             pkt_insert_checksum(p)
             to_layer3(self, p)
         else:
             to_layer5(self, Msg(packet.payload))
-
+            # Ack.
             p = Pkt(0, self.expecting_bit, 0, packet.payload)
             pkt_insert_checksum(p)
             to_layer3(self, p)
             #
             self.expecting_bit = 1 - self.expecting_bit
 
+    # Called when B's timer goes off.
     def timer_interrupt(self):
         pass
+
+
+#####
 
 
 def pkt_compute_checksum(packet):
@@ -144,6 +249,27 @@ def pkt_insert_checksum(packet):
 
 def pkt_is_corrupt(packet):
     return pkt_compute_checksum(packet) != packet.checksum
+
+
+###############################################################################
+
+## ********************** STUDENT-CALLABLE FUNCTIONS **************************
+##
+## STUDENTS: These are functions that should be called from your EntityA and
+## EntityB methods.
+##
+## The first argument to each of these student-callable functions is the object
+## that is invoking the function.  Within an EntityA or EntityB method, that
+## object is available as `self`.  For example, to start a timer in one of your
+## entity methods, you would do something like:
+##
+##   start_timer(self, 10.0) # Start a timer that will go off in 10 time units.
+##
+## Or to send a packet to layer3, you would do something like:
+##
+##   to_layer3(self, Pkt(...)) # Construct a Pkt and send it to layer3.
+##
+## ****************************************************************************
 
 
 def start_timer(calling_entity, increment):
@@ -166,6 +292,27 @@ def get_time(calling_entity):
     return the_sim.get_time(calling_entity)
 
 
+###############################################################################
+
+## ****************************************************************************
+## ***************** NETWORK SIMULATION CODE STARTS BELOW *********************
+##
+## The code below simulates the layer 3 and below network environment:
+##   - simulates the tranmission and delivery (possibly with bit-level
+##     corruption and packet loss) of packets across the layer 3/4 interface
+##   - handles the starting/stopping of a timer, and generates timer
+##     interrupts (resulting in calling student's timer handler).
+##   - generates message to be sent (passed from later 5 to 4)
+##
+## THERE IS NO REASON THAT ANY STUDENT SHOULD HAVE TO READ OR UNDERSTAND
+## THE CODE BELOW.  YOU SHOULD NOT TOUCH OR REFERENCE (in your code) ANY
+## OF THE DATA STRUCTURES BELOW.  If you're interested in how I designed
+## the simulator, you're welcome to look at the code - but again, you should
+## not have to, and you definitely should not have to modify.
+##
+## ****************************************************************************
+
+
 class EventType(Enum):
     TIMER_INTERRUPT = auto()
     FROM_LAYER5 = auto()
@@ -174,10 +321,10 @@ class EventType(Enum):
 
 class Event:
     def __init__(self, ev_time, ev_type, ev_entity, packet=None):
-        self.ev_time = ev_time
-        self.ev_type = ev_type
-        self.ev_entity = ev_entity
-        self.packet = packet
+        self.ev_time = ev_time  # float
+        self.ev_type = ev_type  # EventType
+        self.ev_entity = ev_entity  # EntityA or EntityB
+        self.packet = packet  # Pkt or None
 
 
 class Simulator:
@@ -205,6 +352,7 @@ class Simulator:
         if self.seqnum_limit < 2:
             self.seqnum_limit_n_bits = 0
         else:
+            # How many bits to represent integers in [0, seqnum_limit-1]?
             self.seqnum_limit_n_bits = (self.seqnum_limit - 1).bit_length()
 
         self.trace = options.trace
@@ -281,7 +429,8 @@ class Simulator:
         if self.trace > 2:
             print(f"            INSERTEVENT: time is {self.time}")
             print(f"            INSERTEVENT: future time will be {event.ev_time}")
-
+        # Python 3.10+: use the bisect module:
+        # insort(self.event_list, event, key=lambda e: e.ev_time)
         i = 0
         while i < len(self.event_list) and self.event_list[i].ev_time < event.ev_time:
             i += 1
@@ -294,6 +443,8 @@ class Simulator:
         x = self.interarrival_time * 2.0 * random.random()
         ev = Event(self.time + x, EventType.FROM_LAYER5, self.entity_A)
         self._insert_event(ev)
+
+    #####
 
     def _valid_entity(self, e, method_name):
         if e is self.entity_A or e is self.entity_B:
@@ -337,7 +488,7 @@ class Simulator:
             and len(p.payload) == Msg.MSG_SIZE
         ):
             return True
-
+        # Issue special warnings for invalid seqnums and acknums.
         if type(p.seqnum) is int and not (0 <= p.seqnum < self.seqnum_limit):
             print(
                 f"""WARNING: seqnum in call to `{method_name}` is invalid!
@@ -357,6 +508,8 @@ class Simulator:
   Call ignored."""
             )
         return False
+
+    #####
 
     def start_timer(self, entity, increment):
         if not self._valid_entity(entity, "start_timer"):
@@ -408,6 +561,7 @@ class Simulator:
             receiver = self.entity_A
             self.n_to_layer3_B += 1
 
+        # Simulate losses.
         if random.random() < self.loss_prob:
             self.n_lost += 1
             if self.trace > 0:
@@ -419,20 +573,32 @@ class Simulator:
         checksum = packet.checksum
         payload = packet.payload
 
+        # Simulate corruption.
         if random.random() < self.corrupt_prob:
             self.n_corrupt += 1
             x = random.random()
             if x < 0.75 or self.seqnum_limit_n_bits == 0:
                 payload = b"Z" + payload[1:]
             elif x < 0.875:
+                # Flip a random bit in the seqnum.
+                # The result might be greater than seqnum_limit if seqnum_limit
+                # is not a power of two.  This is OK.
+                # Recall that randrange(x) returns an int in [0, x).
                 seqnum ^= 2 ** random.randrange(self.seqnum_limit_n_bits)
-
+                # Kurose's simulator simply did:
+                # seqnum = 999999
             else:
+                # Flip a random bit in the acknum.
                 acknum ^= 2 ** random.randrange(self.seqnum_limit_n_bits)
-
+                # Kurose's simulator simply did:
+                # acknum = 999999
             if self.trace > 0:
                 print("          TO_LAYER3: packet being corrupted")
 
+        # Compute the arrival time of packet at the other end.
+        # Medium cannot reorder, so make sure packet arrives between 1 and 9
+        # time units after the latest arrival time of packets
+        # currently in the medium on their way to the destination.
         last_time = self.time
         for e in self.event_list:
             if e.ev_type == EventType.FROM_LAYER3 and e.ev_entity is receiver:
@@ -468,6 +634,8 @@ class Simulator:
             return
         return self.time
 
+
+###############################################################################
 
 TRACE = 0
 
@@ -522,6 +690,8 @@ def main(options, cb_A=None, cb_B=None):
     report_config()
     the_sim.run()
 
+
+#####
 
 if __name__ == "__main__":
     desc = "Run a simulation of a reliable data transport protocol."
@@ -583,3 +753,7 @@ if __name__ == "__main__":
     main(options)
     report_results()
     sys.exit(0)
+
+###############################################################################
+
+## End of program.
