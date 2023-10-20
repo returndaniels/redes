@@ -38,6 +38,7 @@
 import argparse
 from copy import deepcopy
 from enum import Enum, auto
+from collections import deque
 import random
 import sys
 import time
@@ -114,12 +115,23 @@ class EntityA:
     # zero and seqnum_limit-1, inclusive.  E.g., if seqnum_limit is 16, then
     # all seqnums must be in the range 0-15.
     def __init__(self, seqnum_limit):
-        pass
+        self.base = 0
+        self.next_seqnum = 0
+        self.window_size = 4
+        self.buffer = deque()
+        self.seqnum_limit = seqnum_limit
+        self.timer_active = False
 
     # Called from layer 5, passed the data to be sent to other side.
     # The argument `message` is a Msg containing the data to be sent.
     def output(self, message):
-        pass
+        if self.next_seqnum < self.base + self.window_size:
+            pkt = Pkt(self.next_seqnum, 0, 0, message.data)
+            self.buffer.append(pkt)
+            to_layer3(self, pkt)
+            if not self.timer_active:
+                start_timer(self, 15.0)
+            self.next_seqnum += 1
 
     # Called from layer 3, when a packet arrives for layer 4 at EntityA.
     # The argument `packet` is a Pkt containing the newly arrived packet.
@@ -128,7 +140,12 @@ class EntityA:
 
     # Called when A's timer goes off.
     def timer_interrupt(self):
-        pass
+        self.timer_active = False
+        for pkt in self.buffer:
+            to_layer3(self, pkt)
+        if self.buffer:
+            self.timer_active = True
+            start_timer(self, 15.0)
 
 
 class EntityB:
@@ -137,12 +154,29 @@ class EntityB:
     #
     # See comment above `EntityA.__init__` for the meaning of seqnum_limit.
     def __init__(self, seqnum_limit):
-        pass
+        # self.seqnum_limit = 8
+        self.expected_seqnum = 0
+        self.last_correctly_received_seqnum = 0
 
     # Called from layer 3, when a packet arrives for layer 4 at EntityB.
     # The argument `packet` is a Pkt containing the newly arrived packet.
     def input(self, packet):
-        pass
+        if (
+            packet.checksum != 0
+            or packet.seqnum < 0
+            # or packet.seqnum >= self.seqnum_limit
+        ):
+            return
+
+        if packet.seqnum == self.expected_seqnum:
+            to_layer5(self, Msg(packet.payload))
+            self.expected_seqnum += 1
+
+        acknum = self.last_correctly_received_seqnum
+        ackpkt = Pkt(packet.seqnum, acknum, 0, bytes([0] * Msg.MSG_SIZE))
+        to_layer3(self, ackpkt)
+
+        self.last_correctly_received_seqnum = packet.seqnum
 
     # Called when B's timer goes off.
     def timer_interrupt(self):
