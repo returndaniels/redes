@@ -13,6 +13,13 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
+% Keywords command
+\providecommand{\keywords}[1]
+{
+  \small	
+  \textbf{\textit{Palavras-chave---}} #1
+}
+
 \title{\textit{Análise Comparativa de Algoritmos de Roteamento para o Problema do Caminho Mais Curto em Redes de Computadores}}
 
 \author{\IEEEauthorblockN{1\textsuperscript{st} Daniel S. Silva}
@@ -25,23 +32,14 @@ Rio de Janeiro, Brasil \\
 \maketitle
 
 \begin{abstract}
-  The paper presents a comparative analysis among three routing algorithms - \textbf{PLisita}, \textbf{Simulated Annealing (SA)}, \textbf{and Simulated Annealing hybridized with Genetic Algorithm (Simulated AnnealingGA)} - aimed at solving the \textit{Shortest Path Problem (SPP)} in computer networks. The study was conducted on a graph composed of 144 randomly distributed nodes. The objective was to reach two specific routers, 119 and 70, by running the SinalGo program for 30 iterations for each algorithm.
-  
-  The values of \textit{EstimatedRTT}, \textit{DevRTT} and \textit{Timeout Interval} were calculated based on the collected data using coefficients alpha (0.125) and beta (0.25). The results revealed that the \textit{Simulated Annealing} algorithm demonstrated superior performance in both proposed situations. Specifically, considering the average values of the \textit{Timeout Interval}, \textbf{Simulated Annealing} proved to be more efficient compared to the other analyzed algorithms.
-  
-  Consistently collected data indicated that the \textit{Timeout Interval} obtained by \textbf{Simulated Annealing} was significantly smaller than the values found in the other evaluated algorithms. These findings emphasize the robustness and suitability of \textbf{Simulated Annealing} for potential implementations in Autonomous Systems (AS) within real computer networks.
-\end{abstract}
-\begin{IEEEkeywords}
-\textbf{Optimization · evolutionary algorithms · shortest path problem  · computer network.}
-\end{IEEEkeywords}
-
-\textbf{\textit{Resumo -}} Este artigo apresenta uma análise comparativa entre três algoritmos de roteamento - PLisita, \textbf{Simulated Annealing (SA)} e \textbf{Simulated Annealing com a hibridização de Algoritmo Genético (Simulated AnnealingGA)} - para solucionar o problema do caminho mais curto (\textit{SPP}) em redes de computadores. O estudo foi conduzido em um grafo composto por 144 nós distribuídos aleatoriamente. O objetivo foi alcançar dois roteadores específicos, o 119 e o 70, através da execução do programa \textit{SinalGo} em 30 iterações para cada algoritmo.
+Este artigo apresenta uma análise comparativa entre três algoritmos de roteamento - PLisita, \textbf{Simulated Annealing (SA)} e \textbf{Simulated Annealing com a hibridização de Algoritmo Genético (Simulated AnnealingGA)} - para solucionar o problema do caminho mais curto (\textit{SPP}) em redes de computadores. O estudo foi conduzido em um grafo composto por 144 nós distribuídos aleatoriamente. O objetivo foi alcançar dois roteadores específicos, o 119 e o 70, através da execução do programa \textit{SinalGo} em 30 iterações para cada algoritmo.
 
 Os valores de \textit{EstimatedRTT}, \textit{DevRTT} e \textit{Timeout Interval} foram calculados com base nos dados coletados, utilizando os coeficientes alfa (0,125) e beta (0,25). Os resultados revelaram que o algoritmo de \textbf{Simulated Annealing} demonstrou um desempenho superior em ambas as situações propostas. Especificamente, ao considerar os valores médios do \textit{Timeout Interval}, o \textbf{Simulated Annealing} mostrou-se mais eficiente em comparação com os demais algoritmos analisados.
 
 Os dados coletados indicaram consistentemente que o \textit{Timeout Interval} obtido pelo \textbf{Simulated Annealing} foi significativamente menor do que os valores encontrados nos outros algoritmos avaliados. Esses achados enfatizam a robustez e a adequação do \textbf{Simulated Annealing} para possíveis implementações em Sistemas Autônomos (AS) em redes de computadores reais.
+\end{abstract}
 
-Palavras-chave---\textbf{Otimização · algoritmos evolutivos · problema do caminho mais curto · rede de computadores.}
+\keywords{Otimização, algoritmos evolutivos, problema do caminho mais curto, rede de computadores}
 
 \section{Introdução}
 O roteamento de pacotes é um elemento essencial nas redes de computadores, sendo o processo pelo qual os dispositivos direcionam e entregam informações na Internet. Na prática, cada dispositivo, ao receber um pacote, utiliza algoritmos de roteamento para determinar o próximo destino apropriado, seguindo um modelo conhecido como hop-by-hop. A eficácia desses algoritmos é crucial para encontrar caminhos adequados para a transmissão eficiente dos dados.
