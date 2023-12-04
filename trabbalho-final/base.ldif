@@ -191,5 +191,5 @@ uidNumber: 10003
 gidNumber: 100
 homeDirectory: /home/vinicius
 loginShell: /bin/bash
-gecos: Vinícius Gusmao [Professor]
+gecos: Vinicius Gusmao [Professor]
 userPassword: {SSHA}72cGwc0a3EfZiCXJJziUFnhUBGChY33U
