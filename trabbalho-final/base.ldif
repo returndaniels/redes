@@ -8,137 +8,137 @@ objectClass: organizationalRole
 cn: hokage
 description: LDAP Manager
 
-dn: centro=ccmn,dc=konoha,dc=jp
+dn: o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organization
 o: ccmn
 
-dn: unidade=ic,centro=ccmn,dc=konoha,dc=jp
+dn: o=ic,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organization
 o: ic
 
-dn: curso=ic-ciencia-computacao,unidade=ic,centro=ccmn,dc=konoha,dc=jp
+dn: ou=ic-ciencia-computacao,o=ic,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Ciencia-Computacao
 
-dn: unidade=if,centro=ccmn,dc=konoha,dc=jp
+dn: o=if,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organization
 o: if
 
-dn: curso=if-fisica-bacharelado,unidade=if,centro=ccmn,dc=konoha,dc=jp
+dn: ou=if-fisica-bacharelado,o=if,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Fisica-Bacharelado
 
-dn: curso=if-fisica-licenciatura,unidade=if,centro=ccmn,dc=konoha,dc=jp
+dn: ou=if-fisica-licenciatura,o=if,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Fisica-Licenciatura
 
-dn: curso=if-fisica-medica,unidade=if,centro=ccmn,dc=konoha,dc=jp
+dn: ou=if-fisica-medica,o=if,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Fisica-Medica
 
-dn: unidade=ig,centro=ccmn,dc=konoha,dc=jp
+dn: o=ig,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organization
 o: ig
 
-dn: curso=ig-geologia-bacharelado,unidade=ig,centro=ccmn,dc=konoha,dc=jp
+dn: ou=ig-geologia-bacharelado,o=ig,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Geologia-Bacharelado
 
-dn: curso=ig-geologia-licenciatura,unidade=ig,centro=ccmn,dc=konoha,dc=jp
+dn: ou=ig-geologia-licenciatura,o=ig,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Geologia-Licenciatura
 
-dn: curso=ig-geografia-bacharelado,unidade=ig,centro=ccmn,dc=konoha,dc=jp
+dn: ou=ig-geografia-bacharelado,o=ig,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Geografia-Bacharelado
 
-dn: curso=ig-geografia-licenciatura,unidade=ig,centro=ccmn,dc=konoha,dc=jp
+dn: ou=ig-geografia-licenciatura,o=ig,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Geografia-Licenciatura
 
-dn: curso=ig-meteorologia,unidade=ig,centro=ccmn,dc=konoha,dc=jp
+dn: ou=ig-meteorologia,o=ig,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Meteorologia
 
-dn: unidade=im,centro=ccmn,dc=konoha,dc=jp
+dn: o=im,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organization
 o: im
 
-dn: curso=im-matematica-licenciatura,unidade=im,centro=ccmn,dc=konoha,dc=jp
+dn: ou=im-matematica-licenciatura,o=im,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Matematica-Licenciatura
 
-dn: curso=im-matematica-bacharelado,unidade=im,centro=ccmn,dc=konoha,dc=jp
+dn: ou=im-matematica-bacharelado,o=im,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Matematica-Bacharelado
 
-dn: curso=im-matematica-aplicada,unidade=im,centro=ccmn,dc=konoha,dc=jp
+dn: ou=im-matematica-aplicada,o=im,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Matematica-Aplicada
 
-dn: curso=im-ciencias-matematicas-terra,unidade=im,centro=ccmn,dc=konoha,dc=jp
+dn: ou=im-ciencias-matematicas-terra,o=im,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Ciencias-Matematicas-Terra
 
-dn: curso=im-ciencias-atuariais,unidade=im,centro=ccmn,dc=konoha,dc=jp
+dn: ou=im-ciencias-atuariais,o=im,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Ciencias-Atuariais
 
-dn: curso=im-estatistica,unidade=im,centro=ccmn,dc=konoha,dc=jp
+dn: ou=im-estatistica,o=im,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Estatistica
 
-dn: unidade=iq,centro=ccmn,dc=konoha,dc=jp
+dn: o=iq,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organization
 o: iq
 
-dn: curso=iq-quimica-bacharelado,unidade=iq,centro=ccmn,dc=konoha,dc=jp
+dn: ou=iq-quimica-bacharelado,o=iq,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Quimica-Bacharelado
 
-dn: curso=iq-quimica-licenciatura,unidade=iq,centro=ccmn,dc=konoha,dc=jp
+dn: ou=iq-quimica-licenciatura,o=iq,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Quimica-Licenciatura
 
-dn: curso=iq-quimica-tecnologica,unidade=iq,centro=ccmn,dc=konoha,dc=jp
+dn: ou=iq-quimica-tecnologica,o=iq,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Quimica-Tecnologica
 
-dn: unidade=ov,centro=ccmn,dc=konoha,dc=jp
+dn: o=ov,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organization
 o: ov
 
-dn: curso=ov-astronomia,unidade=ov,centro=ccmn,dc=konoha,dc=jp
+dn: ou=ov-astronomia,o=ov,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: organizationalUnit
 ou: Astronomia
 
-dn: uid=carolina,curso=ic-ciencia-computacao,unidade=ic,centro=ccmn,dc=konoha,dc=jp
+dn: uid=carolina,ou=ic-ciencia-computacao,o=ic,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: account
 objectClass: posixAccount
@@ -152,7 +152,7 @@ loginShell: /bin/bash
 gecos: Carolina Gil [Professor]
 userPassword: {SSHA}72cGwc0a3EfZiCXJJziUFnhUBGChY33U
 
-dn: uid=paulo,curso=ic-ciencia-computacao,unidade=ic,centro=ccmn,dc=konoha,dc=jp
+dn: uid=paulo,ou=ic-ciencia-computacao,o=ic,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: account
 objectClass: posixAccount
@@ -166,7 +166,7 @@ loginShell: /bin/bash
 gecos: Paulo Aguiar [Professor]
 userPassword: {SSHA}72cGwc0a3EfZiCXJJziUFnhUBGChY33U
 
-dn: uid=ageu,curso=ic-ciencia-computacao,unidade=ic,centro=ccmn,dc=konoha,dc=jp
+dn: uid=ageu,ou=ic-ciencia-computacao,o=ic,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: account
 objectClass: posixAccount
@@ -180,7 +180,7 @@ loginShell: /bin/bash
 gecos: Ageu Cavalcanti [Professor]
 userPassword: {SSHA}72cGwc0a3EfZiCXJJziUFnhUBGChY33U
 
-dn: uid=vinicius,curso=ic-ciencia-computacao,unidade=ic,centro=ccmn,dc=konoha,dc=jp
+dn: uid=vinicius,ou=ic-ciencia-computacao,o=ic,o=ccmn,dc=konoha,dc=jp
 objectClass: top
 objectClass: account
 objectClass: posixAccount
