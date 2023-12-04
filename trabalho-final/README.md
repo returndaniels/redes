@@ -119,7 +119,7 @@ ldapadd -x -W -D "cn=hokage,dc=konoha,dc=jp" -f base.ldif
 Se necessário, é possível remover dados usando o comando:
 
 ```bash
-ldapdelete -x -W -D "cn=hokage,dc=konoha,dc=jp" "centro=ccmn,dc=konoha,dc=jp"
+ldapdelete -x -W -D "cn=hokage,dc=konoha,dc=jp" "o=ccmn,dc=konoha,dc=jp"
 ```
 
 Substitua `cn=hokage,dc=konoha,dc=jp` pelo DN do usuário com permissões para operações de exclusão no servidor LDAP.
